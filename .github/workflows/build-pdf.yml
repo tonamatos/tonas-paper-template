@@ -1,0 +1,39 @@
+name: Build and Deploy (Branch Method)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write  # Required to push the PDF to the gh-pages branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive  # To include style files
+          fetch-depth: 0         # Ensures version history works
+
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+
+      - name: Prepare Deployment Folder
+        run: |
+          mkdir public
+          mv main.pdf public/
+          touch public/.nojekyll  # <--- THIS FIXES INFINITE LOOPS ON GITHUB PAGES
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages  # The action will create this branch for you
+          force_orphan: true        # Keeps the deployment branch clean and small
+          #cname: .wiederhold.dev   # Use for custom domains
