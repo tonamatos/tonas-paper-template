@@ -1,2 +1,2 @@
-# tonas-paper-template
-Template for academic papers.
+# Template for Tona's academic papers
+
