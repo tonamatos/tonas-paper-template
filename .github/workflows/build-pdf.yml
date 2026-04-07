@@ -28,6 +28,7 @@ jobs:
           mkdir public
           mv main.pdf public/
           touch public/.nojekyll  # <--- THIS FIXES INFINITE LOOPS ON GITHUB PAGES
+          echo '<html><body><a href="main.pdf">View PDF</a></body></html>' > public/index.html
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
